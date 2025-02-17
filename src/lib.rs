@@ -1,4 +1,5 @@
 use llvm_plugin::inkwell::module::Module;
+use llvm_plugin::inkwell::values::CallSiteValue;
 use llvm_plugin::{
     LlvmModulePass, ModuleAnalysisManager, PassBuilder, PipelineParsing, PreservedAnalyses,
 };
@@ -28,7 +29,16 @@ fn plugin_registrar(builder: &mut PassBuilder) {
 struct CustomPass;
 impl LlvmModulePass for CustomPass {
     fn run_pass(&self, module: &mut Module, manager: &ModuleAnalysisManager) -> PreservedAnalyses {
-        // transform the IR
-        todo!()
+        for f in module.get_functions() {
+            for bb in f.get_basic_blocks() {
+                for i in bb.get_instructions() {
+                    if let Ok(call_site_value) = CallSiteValue::try_from(i) {
+                        eprintln!("Found a call site: {:?}", call_site_value);
+                    }
+                }
+            }
+        }
+
+        return PreservedAnalyses::All;
     }
 }
