@@ -33,7 +33,10 @@ impl LlvmModulePass for CustomPass {
             for bb in f.get_basic_blocks() {
                 for i in bb.get_instructions() {
                     if let Ok(call_site_value) = CallSiteValue::try_from(i) {
-                        eprintln!("Found a call site: {:?}", call_site_value);
+                        eprintln!(
+                            "Found a call site: {:?}",
+                            call_site_value.get_called_fn_value()
+                        );
                     }
                 }
             }
